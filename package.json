@@ -10,7 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.4",
-    "global": "^4.3.2"
+    "global": "^4.3.2",
+    "pug": "^2.0.3"
   },
   "devDependencies": {
     "nodemon": "^1.18.6"
