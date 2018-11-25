@@ -1,7 +1,8 @@
 const express = require('express')
 const path = require('path')
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const Article = require('./models/acticle')
+const bodyParser = require('body-parser')
 
 // 连接数据库 nodejs-blog
 mongoose.connect('mongodb://localhost/nodejs-blog', { useNewUrlParser: true });
@@ -28,6 +29,20 @@ app.get('/', function (req, res) {
 })
 app.get('/articles/new', function (req, res) {
   res.render('new')
+})
+app.use(bodyParser.urlencoded({ extended: false }))
+app.post('/acticle/create',(req,res)=>{
+  let article=new Article()
+  article.title=req.body.title
+  article.body=req.body.body
+  article.author=req.body.author
+  article.save(err=>{
+    if (err) {
+      console.log(err);
+    }else{
+      res.redirect('/')
+    }
+  })
 })
 app.listen(5000, () => {
   console.log('The server is listening on port 5000');
