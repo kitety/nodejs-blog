@@ -15,6 +15,8 @@ db.on('open', () => {
 })
 
 const app = express()
+// 静态资源文件夹
+app.use(express.static(path.join(__dirname,'public')))
 // 设置模板引擎路径
 app.set('views', path.join(__dirname, 'views'))
 // 设置模板引擎

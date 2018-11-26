@@ -1,9 +1,8 @@
 extends layout
 block content
   h1 Index Page
-  a(href="/articles/new") Add New Article 
   br
-  ul
+  ul.list-group
     each article,i in articles
-      li=article.title
+      li.list-group-item=article.title
 
