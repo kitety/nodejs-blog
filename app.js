@@ -32,8 +32,15 @@ app.get('/', function (req, res) {
 app.get('/articles/new', function (req, res) {
   res.render('new')
 })
+app.get('/article/:id', function (req, res) {
+  Article.findById(req.params.id, (err, article) => {
+    res.render('show', {
+      article: article
+    })
+  })
+})
 app.use(bodyParser.urlencoded({ extended: false }))
-app.post('/acticle/create', (req, res) => {
+app.post('/article/create', (req, res) => {
   let article = new Article(req.body)
   // 新方法 直接放入req.body
   // article.title=req.body.title
