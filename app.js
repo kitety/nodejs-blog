@@ -64,12 +64,23 @@ app.post('/article/create', (req, res) => {
 })
 app.post('/article/update/:id', (req, res) => {
   let query = { _id: req.params.id }
-  Article.update(query, req.body,err => {
+  Article.updateOne(query, req.body, err => {
     if (err) {
       console.log(err);
     } else {
       res.redirect('/')
     }
+  })
+})
+app.delete('/article/:id', (req, res) => {
+  let query = { _id: req.params.id }
+  Article.deleteOne(query, err => {
+    if (err) {
+      console.log(err);
+      res.send({ message: 'fail' })
+      return
+    }
+    res.send({ message: 'success' })
   })
 })
 app.listen(5000, () => {
