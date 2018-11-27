@@ -39,6 +39,14 @@ app.get('/article/:id', function (req, res) {
     })
   })
 })
+app.get('/article/:id/edit', function (req, res) {
+  Article.findById(req.params.id, (err, article) => {
+    res.render('edit', {
+      title: 'Edit',
+      article: article
+    })
+  })
+})
 app.use(bodyParser.urlencoded({ extended: false }))
 app.post('/article/create', (req, res) => {
   let article = new Article(req.body)
@@ -47,6 +55,16 @@ app.post('/article/create', (req, res) => {
   // article.body=req.body.body
   // article.author=req.body.author
   article.save(err => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.redirect('/')
+    }
+  })
+})
+app.post('/article/update/:id', (req, res) => {
+  let query = { _id: req.params.id }
+  Article.update(query, req.body,err => {
     if (err) {
       console.log(err);
     } else {
