@@ -3,9 +3,9 @@ html(lang="en")
   head
     title Knowledgebase
     link(rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css")
-    link(rel="stylesheet" href="/css/style/css")
+    link(rel="stylesheet" href="/css/style.css")
   body
-    nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+    nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.mb-2
       .container
         a.navbar-brand(href='#') Knowledgebase
         button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarsExample05', aria-controls='navbarsExample05', aria-expanded='false', aria-label='Toggle navigation')
@@ -14,11 +14,12 @@ html(lang="en")
           ul.navbar-nav.mr-auto
             li.nav-item.active
               a.nav-link(href='/')
-                | Home 
+                | Home
                 span.sr-only (current)
             li.nav-item
               a.nav-link(href='/articles/new') Add New Article
     .container
+      != messages('message', locals)
       block content
       br
       hr

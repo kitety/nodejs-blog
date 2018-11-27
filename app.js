@@ -3,6 +3,7 @@ const path = require('path')
 const mongoose = require('mongoose');
 const Article = require('./models/article')
 const bodyParser = require('body-parser')
+const session = require('express-session')
 
 // 连接数据库 nodejs-blog
 mongoose.connect('mongodb://localhost/nodejs-blog', { useNewUrlParser: true });
@@ -15,6 +16,19 @@ db.on('open', () => {
 })
 
 const app = express()
+// express-session
+app.use(session({
+  secret: 'keyboard-cat-nodejs-blog',
+  resave: false,
+  saveUninitialized: true
+}))
+// flash message
+app.use(require('connect-flash')());
+app.use(function (req, res, next) {
+  res.locals.messages = require('express-messages')(req, res);
+  next();
+});
+
 // 静态资源文件夹
 app.use(express.static(path.join(__dirname, 'public')))
 // 设置模板引擎路径
@@ -57,7 +71,9 @@ app.post('/article/create', (req, res) => {
   article.save(err => {
     if (err) {
       console.log(err);
+      req.flash("danger", "Article Add Failed");
     } else {
+      req.flash("success", "Article Added");
       res.redirect('/')
     }
   })
@@ -67,7 +83,9 @@ app.post('/article/update/:id', (req, res) => {
   Article.updateOne(query, req.body, err => {
     if (err) {
       console.log(err);
+      req.flash("danger", "Article Can't Be Found!");
     } else {
+      req.flash("success", "Article Edited!");
       res.redirect('/')
     }
   })
@@ -77,9 +95,11 @@ app.delete('/article/:id', (req, res) => {
   Article.deleteOne(query, err => {
     if (err) {
       console.log(err);
+      req.flash("danger", "Article Deleted Failed");
       res.send({ message: 'fail' })
       return
     }
+    req.flash("success", "Article Deleted Success");
     res.send({ message: 'success' })
   })
 })
