@@ -36,8 +36,10 @@ app.set('views', path.join(__dirname, 'views'))
 // 设置模板引擎
 app.set('view engine', 'pug')
 let article = require('./routers/article')
+let user = require('./routers/user')
 // 一定要写好路径
 app.use('/article', article)
+app.use('/user', user)
 app.get('/', function (req, res) {
   Article.find({}, (err, articles) => {
     res.render('article/index', {
