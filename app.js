@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Article = require('./models/article')
 const bodyParser = require('body-parser')
 const session = require('express-session')
+const { check, validationResult } = require('express-validator/check');
 
 // 连接数据库 nodejs-blog
 mongoose.connect('mongodb://localhost/nodejs-blog', { useNewUrlParser: true });
@@ -44,7 +45,9 @@ app.get('/', function (req, res) {
   })
 })
 app.get('/articles/new', function (req, res) {
-  res.render('new')
+  res.render('new',{
+    title: 'Add New Article',
+  })
 })
 app.get('/article/:id', function (req, res) {
   Article.findById(req.params.id, (err, article) => {
@@ -62,21 +65,29 @@ app.get('/article/:id/edit', function (req, res) {
   })
 })
 app.use(bodyParser.urlencoded({ extended: false }))
-app.post('/article/create', (req, res) => {
-  let article = new Article(req.body)
-  // 新方法 直接放入req.body
-  // article.title=req.body.title
-  // article.body=req.body.body
-  // article.author=req.body.author
-  article.save(err => {
-    if (err) {
-      console.log(err);
-      req.flash("danger", "Article Add Failed");
-    } else {
-      req.flash("success", "Article Added");
-      res.redirect('/')
-    }
-  })
+app.post('/article/create', [
+  check('title').isLength({ min: 1 }).withMessage('Title is invalid'),
+  check('body').isLength({ min: 1 }).withMessage('Body is invalid'),
+  check('author').isLength({ min: 1 }).withMessage('Author is invalid')
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.render('new', {
+      title:'Add New Article',
+      errors: errors.array()
+    })
+  } else {
+    let article = new Article(req.body)
+    article.save(err => {
+      if (err) {
+        console.log(err);
+        req.flash("danger", "Article Add Failed");
+      } else {
+        req.flash("success", "Article Added");
+        res.redirect('/')
+      }
+    })
+  }
 })
 app.post('/article/update/:id', (req, res) => {
   let query = { _id: req.params.id }

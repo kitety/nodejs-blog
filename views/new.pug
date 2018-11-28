@@ -1,8 +1,6 @@
 extends layout
 block content
-  h1 Add New Article
-  br
-  br
+  h1 #{title}
   form(method="POST",action="/article/create")
     .form-group
       label Title
