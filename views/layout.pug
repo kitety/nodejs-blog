@@ -17,7 +17,8 @@ html(lang="en")
                 | Home
                 span.sr-only (current)
             li.nav-item
-              a.nav-link(href='/article/new') Add New Article
+              if user
+                a.nav-link(href='/article/new') Add New Article
           ul.navbar-nav.navbar-right
             if user
               li.nav-item
