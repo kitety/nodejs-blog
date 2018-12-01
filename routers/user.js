@@ -78,6 +78,12 @@ router.post('/login', (req, res,next) => {
     successFlash:"Welcome!"
   })(req, res, next)
 })
+// 登出接口
+router.get('/logout',(req,res)=>{
+  req.logout();
+  req.flash('success','You Are Logged Out')
+  res.redirect('/user/login')
+})
 
 module.exports = router;
 

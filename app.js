@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Article = require('./models/article')
 const session = require('express-session')
 const passport = require('passport')
-const database=require('./config/database')
+const database = require('./config/database')
 
 // 连接数据库 nodejs-blog
 mongoose.connect(database.mongodbURI, { useNewUrlParser: true });
@@ -43,6 +43,12 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
 let article = require('./routers/article')
 let user = require('./routers/user')
+
+// 中间件 是否显示登出
+app.get('*', (req, res, next) => {
+  res.locals.user = req.user || null
+  next()
+})
 // 一定要写好路径
 app.use('/article', article)
 app.use('/user', user)
