@@ -18,8 +18,11 @@ html(lang="en")
                 span.sr-only (current)
             li.nav-item
               a.nav-link(href='/article/new') Add New Article
+          ul.navbar-nav.navbar-right
             li.nav-item
               a.nav-link(href='/user/register') Register
+            li.nav-item
+              a.nav-link(href='/user/login') Login
     .container
       != messages('message', locals)
       if errors

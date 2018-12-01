@@ -4,15 +4,25 @@ const { check, validationResult } = require('express-validator/check');
 const User = require('../models/user')
 const bcrypt = require('bcryptjs')
 //https://zhuanlan.zhihu.com/p/35156547
+const passport = require('passport')
+
 
 let router = express.Router();
 router.use(bodyParser.urlencoded({ extended: false }))
+// 渲染注册页面
 router.get('/register', function (req, res) {
   res.render('user/new', {
     title: 'Register',
   })
 })
-// 密码验证
+//渲染登录页面
+router.get('/login', function (req, res) {
+  res.render('user/login', {
+    title: 'Login',
+  })
+})
+
+// 注册接口
 router.post('/register', [
   check('name').isLength({ min: 1 }).withMessage('Name is invalid'),
   check('email').isLength({ min: 1 }).withMessage('Email is invalid'),
@@ -52,12 +62,21 @@ router.post('/register', [
             req.flash("danger", "User Add Failed");
           } else {
             req.flash("success", "User Added");
-            res.redirect('/')
+            res.redirect('/user/login')
           }
         })
       });
     });
   }
+})
+//登录接口
+router.post('/login', (req, res,next) => {
+  passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/user/login',
+    failureFlash: true,
+    successFlash:"Welcome!"
+  })(req, res, next)
 })
 
 module.exports = router;

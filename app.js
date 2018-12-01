@@ -3,9 +3,11 @@ const path = require('path')
 const mongoose = require('mongoose');
 const Article = require('./models/article')
 const session = require('express-session')
+const passport = require('passport')
+const database=require('./config/database')
 
 // 连接数据库 nodejs-blog
-mongoose.connect('mongodb://localhost/nodejs-blog', { useNewUrlParser: true });
+mongoose.connect(database.mongodbURI, { useNewUrlParser: true });
 let db = mongoose.connection;
 // 数据库连接的提示
 db.on('error', err => {
@@ -18,7 +20,7 @@ db.on('open', () => {
 const app = express()
 // express-session
 app.use(session({
-  secret: 'keyboard-cat-nodejs-blog',
+  secret: database.secret,
   resave: false,
   saveUninitialized: true
 }))
@@ -31,6 +33,10 @@ app.use(function (req, res, next) {
 
 // 静态资源文件夹
 app.use(express.static(path.join(__dirname, 'public')))
+// passport
+require('./config/passport')(passport)
+app.use(passport.initialize());
+app.use(passport.session());
 // 设置模板引擎路径
 app.set('views', path.join(__dirname, 'views'))
 // 设置模板引擎
