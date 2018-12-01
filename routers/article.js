@@ -25,6 +25,11 @@ router.get('/:id', function (req, res) {
 })
 router.get('/:id/edit', ensureAuthenticated, function (req, res) {
   Article.findById(req.params.id, (err, article) => {
+    if (article.author != req.user._id) {
+      req.flash('danger', 'Not Authenticated');
+      res.redirect('/')
+      return
+    }
     res.render('article/edit', {
       title: 'Edit',
       article: article
@@ -45,7 +50,7 @@ router.post('/create', [
   } else {
     let article = new Article(req.body)
     // 作者
-    article.author=req.user._id
+    article.author = req.user._id
     article.save(err => {
       if (err) {
         req.flash("danger", "Article Add Failed");
@@ -69,25 +74,35 @@ router.post('/update/:id', (req, res) => {
   })
 })
 router.delete('/:id', ensureAuthenticated, (req, res) => {
+  if (!req.user._id) {
+    return res.status(500).send()
+  }
   let query = { _id: req.params.id }
-  Article.deleteOne(query, err => {
-    if (err) {
-      console.log(err);
-      req.flash("danger", "Article Deleted Failed");
-      res.send({ message: 'fail' })
-      return
+  Article.findById(req.params.id, (err, article) => {
+    if (article.author != req.user._id) {
+      return res.status(500).send()
+    } else {
+      Article.deleteOne(query, err => {
+        if (err) {
+          console.log(err);
+          req.flash("danger", "Article Deleted Failed");
+          res.send({ message: 'fail' })
+          return
+        }
+        req.flash("success", "Article Deleted Success");
+        res.send({ message: 'success' })
+      })
     }
-    req.flash("success", "Article Deleted Success");
-    res.send({ message: 'success' })
   })
+
 })
 // 中间件
-function ensureAuthenticated(req,res,next){
+function ensureAuthenticated(req, res, next) {
   //passport 提供
   if (req.isAuthenticated()) {
     next()
-  }else{
-    req.flash('danger','Please Login');
+  } else {
+    req.flash('danger', 'Please Login');
     res.redirect('/user/login')
   }
 
