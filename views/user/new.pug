@@ -4,18 +4,18 @@ block content
   form(method="POST",action="/user/register")
     .form-group
       label Name:
-      input.form-control(type="text",name="name")
+      input.form-control(type="text",name="name" value=infomation.name)
     .form-group
       label Email:
-      input.form-control(type="text",name="email")
+      input.form-control(type="text",name="email" value=infomation.email)
     .form-group
       label Username:
-      input.form-control(type="text",name="username")
+      input.form-control(type="text",name="username" value=infomation.username)
     .form-group
       label Password:
-      input.form-control(type="password",name="password")
+      input.form-control(type="password",name="password" value=infomation.password)
     .form-group
       label password Confirmation:
-      input.form-control(type="password",name="confirmPassword")
+      input.form-control(type="password",name="confirmPassword" value=infomation.confirmPassword)
     br
     input.btn.btn-primary(type="submit",value="Submit")

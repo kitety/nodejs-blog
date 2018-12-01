@@ -13,6 +13,7 @@ router.use(bodyParser.urlencoded({ extended: false }))
 router.get('/register', function (req, res) {
   res.render('user/new', {
     title: 'Register',
+    infomation:{ }
   })
 })
 //渲染登录页面
@@ -27,9 +28,8 @@ router.post('/register', [
   check('name').isLength({ min: 1 }).withMessage('Name is invalid'),
   check('email').isLength({ min: 1 }).withMessage('Email is invalid'),
   check('username').isLength({ min: 1 }).withMessage('Username is invalid'),
-  check('password').isLength({ min: 1 }).withMessage('Password is invalid'),
   // 两次密码验证
-  check("password", "invalid password")
+  check("password", "invalid password/password Confirmation")
     .isLength({ min: 1 })
     .custom((value, { req, loc, path }) => {
       if (value !== req.body.confirmPassword) {
@@ -43,6 +43,7 @@ router.post('/register', [
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.render('user/new', {
+      infomation: req.body,
       errors: errors.array()
     })
   } else {
